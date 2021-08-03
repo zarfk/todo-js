@@ -3,11 +3,12 @@ import {todoList} from '../index';
 
 
 //Referencias en el HTML
-const divTodoList   = document.querySelector('.todo-list');
-const txtInput      = document.querySelector('.new-todo');
-const btnBorrar     = document.querySelector('.clear-completed');
-const ulFiltros     = document.querySelector('.filters');
-const anchorFiltros = document.querySelectorAll('.filtro');
+const divTodoList      = document.querySelector('.todo-list');
+const txtInput         = document.querySelector('.new-todo');
+const btnBorrar        = document.querySelector('.clear-completed');
+const ulFiltros        = document.querySelector('.filters');
+const anchorFiltros    = document.querySelectorAll('.filtro');
+const contador         = document.getElementsByTagName('strong')[0];
 
 
 export const crearTodoHTML = ( todo ) => {
@@ -45,6 +46,7 @@ txtInput.addEventListener('keyup', (event) =>{
 
         crearTodoHTML(nuevoTodo);
         txtInput.value = '';
+        actualizadorDeConteo();
 
     }
 
@@ -59,9 +61,11 @@ divTodoList.addEventListener('click', (evento) => {
     if(nombreElemento.includes('input')){
         todoList.marcarCompletado(todoId);
         todoElemento.classList.toggle('completed');
+        actualizadorDeConteo();
     }else if(nombreElemento.includes('button')){
         todoList.eliminarTodo(todoId);
         divTodoList.removeChild(todoElemento);
+        actualizadorDeConteo();
     }
     
 });
@@ -69,6 +73,7 @@ divTodoList.addEventListener('click', (evento) => {
 btnBorrar.addEventListener('click', () =>{
 
     todoList.eliminarCompletados();
+    actualizadorDeConteo();
 
     for( let i = divTodoList.children.length-1; i >= 0; i-- ){
         const elemento = divTodoList.children[i];
@@ -83,7 +88,6 @@ btnBorrar.addEventListener('click', () =>{
 ulFiltros.addEventListener('click', (event) => {
 
     const filtro =  event.target.text;
-    console.log(event.target.txt);
 
     if(!filtro) {return;} 
 
@@ -106,3 +110,12 @@ ulFiltros.addEventListener('click', (event) => {
 
 });
 
+// Funciones
+
+export const actualizadorDeConteo = () => {
+    let countNumber = todoList.todos.length;
+    for(const completados of todoList.todos){
+        if(completados.completado){countNumber--;}
+    }
+    contador.innerHTML = countNumber;
+}
